@@ -22,11 +22,12 @@ df_raw_data_with_audit_time <-df_raw_data  %>%
 
 # check duration
 df_check_duration <- cleaningtools::check_duration(dataset = df_raw_data_with_audit_time, 
-                                                column_to_check = "duration",
-                                                uuid_column = "X_uuid",
-                                                log_name = "duration_log",
-                                                lower_bound = 20,
-                                                higher_bound = 120)
+                                                   column_to_check = "duration",
+                                                   uuid_column = "X_uuid",
+                                                   log_name = "duration_log",
+                                                   lower_bound = 20,
+                                                   higher_bound = 120)
+
 df_check_duration$duration_log %>% View()
 
 # combine cleaning tools checks
@@ -38,10 +39,10 @@ outlier_cols_not_4_checking <- df_raw_data %>%
   colnames()
 
 df_list_check_outliers <- cleaningtools::check_outliers(dataset = df_raw_data, 
-                                                     uuid_column = "X_uuid",
-                                                     sm_separator = ".",
-                                                     strongness_factor = 3,
-                                                     columns_not_to_check = outlier_cols_not_4_checking) 
+                                                        uuid_column = "X_uuid",
+                                                        sm_separator = ".",
+                                                        strongness_factor = 3,
+                                                        columns_not_to_check = outlier_cols_not_4_checking) 
 
 df_list_check_outliers$potential_outliers %>% View()
 
@@ -97,11 +98,11 @@ list_log$soft_duplicate <- df_soft_duplicates$soft_duplicate_log
 
 # check others values -----------------------------------------------------
 df_other_checks <- cleaningtools::check_others(dataset = df_raw_data,
-                                            uuid_column = "X_uuid",
-                                            columns_to_check = names(df_raw_data %>%
-                                                                 dplyr::select(ends_with("_other")) %>%
-                                                                 dplyr::select(-contains(".")))
-                                      )
+                                               uuid_column = "X_uuid",
+                                               columns_to_check = names(df_raw_data %>%
+                                                                            dplyr::select(ends_with("_other")) %>%
+                                                                            dplyr::select(-contains(".")))
+                                               )
 
 df_other_checks$other_log %>% view()
 
@@ -130,7 +131,7 @@ add_with_info <- add_info_to_cleaning_log(list_of_log = df_combined_log,
  
 # # create_xlsx_cleaning_log()
 add_with_info %>%
-  create_xlsx_cleaning_log(cleaning_log_name = "cleaning_log",
+    create_xlsx_cleaning_log(cleaning_log_name = "cleaning_log",
                            change_type_col = "change_type",
                            column_for_color = "check_binding",
                            kobo_survey = df_survey,
