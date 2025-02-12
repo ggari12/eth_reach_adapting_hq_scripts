@@ -16,7 +16,8 @@ df_choices <- cleaningtools::cleaningtools_choices
 # Perform Initial Checks
 # -------------------------------
 checks_logs <- df_raw_data |>
-    check_duplicate(uuid_column = "X_uuid") |>
+    check_duplicate(uuid_column = "X_uuid",
+                    log_name = "duplicate_log") |>
     check_soft_duplicates(kobo_survey = df_survey,
                           uuid_column = "X_uuid",
                           idnk_value = "dont_know",
@@ -24,7 +25,8 @@ checks_logs <- df_raw_data |>
                           log_name = "soft_duplicate_log",
                           threshold = 7,
                           return_all_results = FALSE) |>
-    check_pii(uuid_column = "X_uuid") |>
+    check_pii(uuid_column = "X_uuid",
+              words_to_look = NULL) |>
     check_outliers(uuid_column = "X_uuid",
                    sm_separator = ".",
                    strongness_factor = 3) |>
@@ -55,7 +57,10 @@ checks_logs <- checks_logs |>
                  log_name = "duration_log",
                  lower_bound = 20,
                  higher_bound = 120) |>
-  check_percentage_missing(uuid_column = "X_uuid") |>
+  check_percentage_missing(uuid_column = "X_uuid",
+                           column_to_check = "percentage_missing",
+                           strongness_factor = 2,
+                           log_name = "percentage_missing_log") |>
   check_others(uuid_column = "X_uuid", 
                columns_to_check = other_specify) |>
   check_logical_with_list(uuid_column = "X_uuid",
@@ -75,7 +80,10 @@ cleaning_log <- checks_logs |>
                            information_to_add = c("enumerator_num", "date_assessment"))
 
 cleaning_log |>
-  create_xlsx_cleaning_log(kobo_survey = df_survey,
+  create_xlsx_cleaning_log(cleaning_log_name = "cleaning_log",
+                           change_type_col = "change_type",
+                           column_for_color = "check_binding",
+                           kobo_survey = df_survey,
                            kobo_choices = df_choices,
                            use_dropdown = TRUE,
                            sm_dropdown_type = "logical",
@@ -142,7 +150,7 @@ cleaning_review <- review_cleaning(raw_dataset = df_raw_data,
                                    deletion_log_uuid_column = "uuid")
 
 # -------------------------------
-# Write Clean Dataset to Excel
+# Export Clean Dataset to Excel
 # -------------------------------
 clean_info_list <- list(dataset = clean_data$data_with_fix_concat,
                         cleaning_log = only_cleaning,
