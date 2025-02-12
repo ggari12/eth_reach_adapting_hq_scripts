@@ -1,3 +1,5 @@
+# Load required libraries
+rm(list = ls())
 library(tidyverse)
 library(cleaningtools)
 
