@@ -1,4 +1,6 @@
 # Load required libraries
+rm(list = ls())
+
 library(tidyverse)
 library(cleaningtools)
 library(openxlsx)
@@ -120,10 +122,13 @@ clean_data <- recreate_parent_column(dataset = clean_data,
                                      sm_separator = ".",
                                      cleaning_log_to_append = filled_cleaning_log)
 
+clean_data_updated <- clean_data$data_with_fix_concat
+filled_cleaning_log_updated <- clean_data$cleaning_log
+
 # -------------------------------
 # Review Cleaning & Others
 # -------------------------------
-others_review <- review_others(clean_data$data_with_fix_concat,
+others_review <- review_others(clean_data_updated,
                                uuid_column = "X_uuid",
                                kobo_survey = df_survey,
                                sm_separator = ".")
@@ -138,7 +143,7 @@ only_cleaning <- clean_data$cleaning_log |>
 # reviewing cleaning ------------------------------------------------------
 cleaning_review <- review_cleaning(raw_dataset = df_raw_data,
                                    raw_dataset_uuid_column = "X_uuid",
-                                   clean_dataset = clean_data$data_with_fix_concat,
+                                   clean_dataset = clean_data_updated,
                                    clean_dataset_uuid_column = "X_uuid",
                                    cleaning_log = only_cleaning,
                                    cleaning_log_change_type_column = "change_type",
